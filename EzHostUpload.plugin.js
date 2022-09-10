@@ -6,8 +6,8 @@
  * @license MIT
  * @description Allows you to upload files to e-z.host.
  * @website https://e-z.host
- * @source https://raw.githubusercontent.com/zetrgdzhurtgfdz5r47z8/EzHostUpload.plugin/main/E-Z.HostUpload.plugin.js?token=GHSAT0AAAAAABW5HEP2EBHAAMXOSZRS7KK4YY42URQ
- * @updateUrl https://raw.githubusercontent.com/zetrgdzhurtgfdz5r47z8/EzHostUpload.plugin/main/E-Z.HostUpload.plugin.js?token=GHSAT0AAAAAABW5HEP2EBHAAMXOSZRS7KK4YY42URQ
+ * @source https://raw.githubusercontent.com/zetrgdzhurtgfdz5r47z8/EzHostUpload.plugin/main/EzHostUpload.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/zetrgdzhurtgfdz5r47z8/EzHostUpload.plugin/main/EzHostUpload.plugin.js
  * @stolenFrom https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/Custom%20Uploader.plugin.js
  */
 
