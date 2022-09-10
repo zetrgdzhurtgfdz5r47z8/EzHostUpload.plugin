@@ -2,7 +2,7 @@
  * @name EzHostUpload
  * @author Sheriff
  * @authorId 2599
- * @version 1.0.0
+ * @version 1.0.2
  * @license MIT
  * @description Allows you to upload files to e-z.host.
  * @website https://e-z.host
@@ -19,11 +19,11 @@ module.exports = (() => {
                 name: "Sheriff",
                 discord_id: "2599",
             }],
-            version: "1.0.0",
+            version: "1.0.2",
             description: "Allows you to upload files to e-z.host"
         },
-        github: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins",
-        github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/Custom%20Uploader.plugin.js",
+        github: "https://raw.githubusercontent.com/zetrgdzhurtgfdz5r47z8/EzHostUpload.plugin/main/EzHostUpload.plugin.js",
+        github_raw: "https://raw.githubusercontent.com/zetrgdzhurtgfdz5r47z8/EzHostUpload.plugin/main/EzHostUpload.plugin.js",
         main: "index.js",
         defaultConfig: [{
                 "type": "switch",
