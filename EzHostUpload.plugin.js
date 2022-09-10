@@ -2,7 +2,7 @@
  * @name EzHostUpload
  * @author Sheriff
  * @authorId 2599
- * @version 1.0.2
+ * @version 1.0.3
  * @license MIT
  * @description Allows you to upload files to e-z.host.
  * @website https://e-z.host
@@ -19,7 +19,7 @@ module.exports = (() => {
                 name: "Sheriff",
                 discord_id: "2599",
             }],
-            version: "1.0.2",
+            version: "1.0.3",
             description: "Allows you to upload files to e-z.host"
         },
         github: "https://raw.githubusercontent.com/zetrgdzhurtgfdz5r47z8/EzHostUpload.plugin/main/EzHostUpload.plugin.js",
@@ -281,11 +281,11 @@ module.exports = (() => {
                                             }, true))
                                         }
                                     }
-                                    if (props.message.stickers[0]) {
+                                    if (props.message.stickerItems[0]) {
                                         ret.props.children.splice(5, 0, ContextMenu.buildMenuItem({
                                             label: "Upload File",
                                             action: () => {
-                                                this.upload('https://media.discordapp.net/stickers/' + props.message.stickers[0].id + '.webp')
+                                                this.upload('https://media.discordapp.net/stickers/' + props.message.stickerItems[0].id + '.webp')
                                             }
                                         }, true))
                                     }
