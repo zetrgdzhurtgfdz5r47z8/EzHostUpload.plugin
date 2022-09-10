@@ -10,25 +10,28 @@
  * @updateUrl https://raw.githubusercontent.com/zetrgdzhurtgfdz5r47z8/EzHostUpload.plugin/main/EzHostUpload.plugin.js
  * @stolenFrom https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/Custom%20Uploader.plugin.js
  */
-
 const request = require("request");
 module.exports = (() => {
     const config = {
         info: {
             name: "EzHostUpload",
-            authors: [
-                {
-                    name: "Sheriff",
-                    discord_id: "2599",
-                }
-            ],
+            authors: [{
+                name: "Sheriff",
+                discord_id: "2599",
+            }],
             version: "1.0.0",
             description: "Allows you to upload files to e-z.host"
         },
         github: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins",
-        github_raw:"https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/Custom%20Uploader.plugin.js",
+        github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/Custom%20Uploader.plugin.js",
         main: "index.js",
-        defaultConfig: [
+        defaultConfig: [{
+                "type": "switch",
+                "id": "copyUploadedUrl",
+                "name": "Clipbaord",
+                "value": false,
+                "note": "Automatically put the uploaded url into clipboard"
+            },
             {
                 "name": "key",
                 "type": "textbox",
@@ -68,16 +71,26 @@ module.exports = (() => {
             }
             start() {}
             stop() {}
-        }
-        : (([Plugin, Library]) => {
+        } :
+        (([Plugin, Library]) => {
             const plugin = (Plugin, Library) => {
-                const { Patcher, WebpackModules, ContextMenu, DiscordModules, Toasts, PluginUtilities } = Library;
-                const {Dispatcher, React} = DiscordModules;
+                const {
+                    Patcher,
+                    WebpackModules,
+                    ContextMenu,
+                    DiscordModules,
+                    Toasts,
+                    PluginUtilities
+                } = Library;
+                const {
+                    Dispatcher,
+                    React
+                } = DiscordModules;
                 const uploaderIcon = React.createElement("path", {
                     fill: "currentColor",
                     d: "M384 352v64c0 17.67-14.33 32-32 32H96c-17.67 0-32-14.33-32-32v-64c0-17.67-14.33-32-32-32s-32 14.33-32 32v64c0 53.02 42.98 96 96 96h256c53.02 0 96-42.98 96-96v-64c0-17.67-14.33-32-32-32S384 334.3 384 352zM201.4 9.375l-128 128c-12.51 12.51-12.49 32.76 0 45.25c12.5 12.5 32.75 12.5 45.25 0L192 109.3V320c0 17.69 14.31 32 32 32s32-14.31 32-32V109.3l73.38 73.38c12.5 12.5 32.75 12.5 45.25 0s12.5-32.75 0-45.25l-128-128C234.1-3.125 213.9-3.125 201.4 9.375z",
                 });
-
+                
                 // can parse as regex, json, or xml
                 // with support for adding variables to the url or other data
                 // for example: if the response only gives back something such as {"id":"WQYX5"}, we can use https://i.imgur.com/$json:id to get the url
@@ -87,26 +100,27 @@ module.exports = (() => {
                     const parseAs = string.split("$")
                     const values = []
                     for (const part of parseAs) {
-                        const fromJson = function (object, reference) {
+                        const fromJson = function(object, reference) {
                             function arr_deref(o, ref, i) {
                                 return !ref ? o : (o[(ref.slice(0, i ? -1 : ref.length)).replace(/^['"]|['"]$/g, '')]);
                             }
-
+                            
                             function dot_deref(o, ref) {
                                 return ref.split('[').reduce(arr_deref, o || "");
                             }
-
+                            
                             return !reference ? object : reference.split('.').reduce(dot_deref, object);
                         };
-
+                        
                         if (part.startsWith("json:")) {
                             const json = part.split("json:")[1];
                             values.push(fromJson(JSON.parse(response), json));
                         } else if (part.startsWith("xml:")) {
                             const xml = parseAs[1].split("xml:")[1];
+                            
                             function xmlToJson(xml) {
                                 var obj = {};
-
+                                
                                 if (xml.nodeType === 1) {
                                     if (xml.attributes.length > 0) {
                                         obj["@attributes"] = {};
@@ -118,7 +132,7 @@ module.exports = (() => {
                                 } else if (xml.nodeType === 3) {
                                     obj = xml.nodeValue;
                                 }
-
+                                
                                 if (xml.hasChildNodes()) {
                                     for (var i = 0; i < xml.childNodes.length; i++) {
                                         var item = xml.childNodes.item(i);
@@ -126,10 +140,10 @@ module.exports = (() => {
                                         if (item.nodeType === 3 && item.nodeValue.trim().length > 0) {
                                             obj = item.nodeValue.trim();
                                         } else if (item.nodeType === 1) {
-                                            if (typeof (obj[nodeName]) == "undefined") {
+                                            if (typeof(obj[nodeName]) == "undefined") {
                                                 obj[nodeName] = xmlToJson(item);
                                             } else {
-                                                if (typeof (obj[nodeName].push) == "undefined") {
+                                                if (typeof(obj[nodeName].push) == "undefined") {
                                                     var old = obj[nodeName];
                                                     obj[nodeName] = [];
                                                     obj[nodeName].push(old);
@@ -155,7 +169,7 @@ module.exports = (() => {
                     }
                     return values.join("");
                 }
-
+                
                 return class CustomUploader extends Plugin {
                     onStart() {
                         this.attachment = WebpackModules.find((m) => m.default?.displayName === "Attachment")
@@ -164,7 +178,7 @@ module.exports = (() => {
                         this.draft = WebpackModules.getByProps("getDraft");
                         this.MiniPopover = WebpackModules.find((m) => m?.default?.displayName === "MiniPopover")
                         this.TooltipWrapper = WebpackModules.getByPrototypes("renderTooltip")
-
+                        
                         Patcher.after(
                             this.attachment,
                             "default",
@@ -174,14 +188,16 @@ module.exports = (() => {
                                     width: "24",
                                     height: "24",
                                     viewBox: "-80 -80 640 640",
-                                    onClick: () => {this.upload(ret.props.children[0].props.children[3].props.href)}
+                                    onClick: () => {
+                                        this.upload(ret.props.children[0].props.children[3].props.href)
+                                    }
                                 }, uploaderIcon);
-
+                                
                                 ret.props.children[0].props.children.splice(2, 0, button)
                             }
                         )
-
-
+                        
+                        
                         Patcher.after(this.MiniPopover, "default", (_, args, ret) => {
                             if (!(args[0].children && args[0].children.props) || ret.props.children.props.children.length > 3) return;
                             // add toggable button for this.settings.uploader
@@ -223,7 +239,7 @@ module.exports = (() => {
                                     }
                                 }
                             })
-
+                            
                             // if exists, replace with new button
                             if (ret.props.children.props.children[3]) {
                                 ret.props.children.props.children = button;
@@ -231,16 +247,59 @@ module.exports = (() => {
                                 ret.props.children.props.children.push(button)
                             }
                         })
-
-
+                        
+                        
                         ContextMenu.getDiscordMenu("MessageContextMenu").then(menu => {
                             Patcher.after(
                                 menu,
                                 "default",
                                 (_, [props], ret) => {
+                                    //console.log(props.message)
                                     const url = props.attachment?.url;
-                                    if (typeof url === "undefined") {return}
-                                    ret.props.children.splice(5, 0, ContextMenu.buildMenuItem({label: "Upload File", action: () => {this.upload(url)}}, true))
+                                    if (typeof url === "string") {
+                                        ret.props.children.splice(5, 0, ContextMenu.buildMenuItem({
+                                            label: "Upload File",
+                                            action: () => {
+                                                this.upload(url)
+                                            }
+                                        }, true))
+                                    }
+                                    if (props.message.embeds[0]) {
+                                        if (props.message.embeds[0].video) {
+                                            ret.props.children.splice(5, 0, ContextMenu.buildMenuItem({
+                                                label: "Upload File",
+                                                action: () => {
+                                                    this.upload(props.message.embeds[0].video.url)
+                                                }
+                                            }, true))
+                                        } else if (props.message.embeds[0].image) {
+                                            ret.props.children.splice(5, 0, ContextMenu.buildMenuItem({
+                                                label: "Upload File",
+                                                action: () => {
+                                                    this.upload(props.message.embeds[0].image.url)
+                                                }
+                                            }, true))
+                                        }
+                                    }
+                                    if (props.message.stickers[0]) {
+                                        ret.props.children.splice(5, 0, ContextMenu.buildMenuItem({
+                                            label: "Upload File",
+                                            action: () => {
+                                                this.upload('https://media.discordapp.net/stickers/' + props.message.stickers[0].id + '.webp')
+                                            }
+                                        }, true))
+                                    }
+                                    if (props.message.content) {
+                                        if (props.message.content.startsWith("<") && props.message.content.endsWith(">") && props.message.content.split(":").length == 3) {
+                                            ret.props.children.splice(5, 0, ContextMenu.buildMenuItem({
+                                                label: "Upload File",
+                                                action: () => {
+                                                    this.upload('https://cdn.discordapp.com/emojis/' + props.message.content.split(":")[2].replace(">", "") + '.webp')
+                                                }
+                                            }, true))
+                                        }
+                                    }
+                                    return
                                 }
                             )
                         })
@@ -248,7 +307,10 @@ module.exports = (() => {
                             this.fileUploadMod,
                             "uploadFiles",
                             (_, props, ret) => {
-                                const {channelId, uploads} = props[0];
+                                const {
+                                    channelId,
+                                    uploads
+                                } = props[0];
                                 if (!this.settings.uploader) {
                                     ret(...props);
                                 } else {
@@ -258,7 +320,7 @@ module.exports = (() => {
                             }
                         )
                     }
-
+                    
                     async upload(url) {
                         let data = [];
                         let options = {}
@@ -269,29 +331,43 @@ module.exports = (() => {
                             data.push(Buffer.from(chunk));
                         }).on("end", () => {
                             const formDataName = "file";
-							console.log(this.settings?.uploaderResponseParser + "" + typeof(this.settings?.uploaderResponseParser))
-							console.log(this.settings?.uploaderErrorParser + "" + typeof(this.settings?.uploaderErrorParser))
                             let bodyArguments = {};
-                            const formData = {[formDataName]: {value: Buffer.concat(data), options: {filename: url.split('/').pop(), contentType: response.response.headers["content-type"]}}}
-                            options.formData = {...bodyArguments, ...formData}
+                            const formData = {
+                                [formDataName]: {
+                                    value: Buffer.concat(data),
+                                    options: {
+                                        filename: url.split('/').pop(),
+                                        contentType: response.response.headers["content-type"]
+                                    }
+                                }
+                            }
+                            options.formData = {
+                                ...bodyArguments,
+                                ...formData
+                            }
                             options.url = "https://api.e-z.host/files";
                             options.method = "POST";
-							options.headers = {"Key":this.settings.uploadeKey}
+                            options.headers = {
+                                "Key": this.settings.uploadeKey
+                            }
                             options.paramaters = {};
-                            uploadData(options, "$json:url", "$json:error");
+                            uploadData(options, "$json:url", "$json:error", this.settings.copyUploadedUrl);
                         });
-
-
-                        function uploadData(options, callback, errorCallback) {
+                        
+                        
+                        function uploadData(options, callback, errorCallback, copyurl) {
                             console.log("\x1b[36m%s\x1b[0m", "[Custom Uploader] " + options.url);
-                            request(options, function (error, response, body) {
+                            request(options, function(error, response, body) {
                                 console.log("\x1b[36m%s\x1b[0m", "[Custom Uploader] " + response.statusCode + " " + response.statusMessage);
-                                console.log("\x1b[36m%s\x1b[0m", "[Custom Uploader] " +  body.toString());
+                                console.log("\x1b[36m%s\x1b[0m", "[Custom Uploader] " + body.toString());
                                 if (response?.statusCode === 200 || response?.statusCode === 201 || response?.statusCode === 202) {
-                                    const url = parseResponse(body, callback);
-                                    if (url) {
-                                        DiscordNative.clipboard.copy(url);
-                                        Toasts.success(`File Uploaded Successfully as: ${url}. It has been copied to your clipboard.`);
+                                    if (copyurl) {
+                                        if (JSON.parse(body).imageUrl) {
+                                            DiscordNative.clipboard.copy(JSON.parse(body).imageUrl);
+                                            Toasts.success(`File Uploaded Successfully + copied to clipboard.`);
+                                        } else {
+                                            Toasts.success(`File Uploaded Successfully.`);
+                                        }
                                     } else {
                                         Toasts.success(`File Uploaded Successfully.`);
                                     }
@@ -301,7 +377,7 @@ module.exports = (() => {
                             });
                         }
                     }
-
+                    
                     fileUpload(files, channelId, draft) {
                         const message = this.MessageUtils
                         let urls = [];
@@ -315,18 +391,31 @@ module.exports = (() => {
                                 const data = Buffer.from(buffer);
                                 const formDataName = "file";
                                 const bodyArguments = {};
-                                const formData = {[formDataName]: {value: data, options: {filename: file.item.file.name, contentType: file.item.file.type}}}
-                                options.formData = {...bodyArguments, ...formData}
+                                const formData = {
+                                    [formDataName]: {
+                                        value: data,
+                                        options: {
+                                            filename: file.item.file.name,
+                                            contentType: file.item.file.type
+                                        }
+                                    }
+                                }
+                                options.formData = {
+                                    ...bodyArguments,
+                                    ...formData
+                                }
                                 options.url = "https://api.e-z.host/files";
                                 options.method = "POST";
-                                options.headers = {"Key":this.settings.uploadeKey}
+                                options.headers = {
+                                    "Key": this.settings.uploadeKey
+                                }
                                 options.paramaters = {};
                                 const callback = "$json:url"
                                 const errorCallback = "$json:error"
-                                request(options, function (error, response, body) {
+                                request(options, function(error, response, body) {
                                     n++;
                                     console.log("\x1b[36m%s\x1b[0m", "[Custom Uploader] " + response.statusCode + " " + response.statusMessage);
-                                    console.log("\x1b[36m%s\x1b[0m", "[Custom Uploader] " +  body.toString());
+                                    console.log("\x1b[36m%s\x1b[0m", "[Custom Uploader] " + body.toString());
                                     if (response?.statusCode === 200 || response?.statusCode === 201 || response?.statusCode === 202) {
                                         const url = parseResponse(body, callback)
                                         if (url) {
@@ -344,20 +433,27 @@ module.exports = (() => {
                                 })
                             });
                         }
+                        
                         function after_upload(urls) {
                             if (urls.length > 0) {
-                                message.sendMessage(channelId, {content: draft + "\n" + urls.join("\n"), validNonShortcutEmojis: []});
+                                message.sendMessage(channelId, {
+                                    content: draft + "\n" + urls.join("\n"),
+                                    validNonShortcutEmojis: []
+                                });
                             } else {
-                                message.sendMessage(channelId, {content: draft, validNonShortcutEmojis: []});
+                                message.sendMessage(channelId, {
+                                    content: draft,
+                                    validNonShortcutEmojis: []
+                                });
                             }
                             Toasts.success(`${urls.length} Files Uploaded Successfully.`);
                         }
                     }
-
+                    
                     getSettingsPanel() {
                         return this.buildSettingsPanel().getElement();
                     }
-
+                    
                     onStop() {
                         Dispatcher.unsubscribe("CHANNEL_SELECT");
                         Patcher.unpatchAll(config.info.name);
