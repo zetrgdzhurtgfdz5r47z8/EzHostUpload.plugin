@@ -8,7 +8,7 @@
  * @website https://e-z.host
  * @source https://raw.githubusercontent.com/zetrgdzhurtgfdz5r47z8/EzHostUpload.plugin/main/EzHostUpload.plugin.js
  * @updateUrl https://raw.githubusercontent.com/zetrgdzhurtgfdz5r47z8/EzHostUpload.plugin/main/EzHostUpload.plugin.js
- * @stolenFrom https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/Custom%20Uploader.plugin.js
+ * @stolenFrom https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/CustomUploader/CustomUploader.plugin.js
  */
 const request = require("request");
 module.exports = (() => {
